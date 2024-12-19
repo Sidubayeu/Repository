@@ -10,8 +10,10 @@
 int eliminate(Matrix *mat, Matrix *b) {
     int i, j, k;
     int n = mat->r;
-
+    
+    // Elimnacja Gaussa
     for (i = 0; i < n; i++) {
+        // Szukamy największego elementu w kolumnie i, aby uniknąć dzielenia przez 0
         if (mat->data[i][i] == 0) {
             int swapRow = -1;
             for (j = i + 1; j < n; j++) {
@@ -20,23 +22,23 @@ int eliminate(Matrix *mat, Matrix *b) {
                     break;
                 }
             }
-
+            // Jeżeli nie znaleźliśmy niezerowego elementu, to macierz jest osobliwa
             if (swapRow == -1) {
-                return 1;
+                return 1;  // Macierz osobliwa
             }
-
+            // Zamieniamy wiersze
             for (j = 0; j < n; j++) {
                 double temp = mat->data[i][j];
                 mat->data[i][j] = mat->data[swapRow][j];
                 mat->data[swapRow][j] = temp;
             }
-
+            // Zamieniamy również wektor b
             double temp = b->data[i][0];
             b->data[i][0] = b->data[swapRow][0];
             b->data[swapRow][0] = temp;
         }
 
-
+        // Przechodzimy przez wszystkie wiersze poniżej i zerujemy wartości w kolumnie i
         for (j = i + 1; j < n; j++) {
             double factor = mat->data[j][i] / mat->data[i][i];
             for (k = i; k < n; k++) {
@@ -46,14 +48,13 @@ int eliminate(Matrix *mat, Matrix *b) {
         }
     }
 
-
+    // Podstawienie wsteczne (rozwiązanie układu równań)
     for (i = n - 1; i >= 0; i--) {
         for (j = i + 1; j < n; j++) {
             b->data[i][0] -= mat->data[i][j] * b->data[j][0];
         }
         b->data[i][0] /= mat->data[i][i];
     }
-printf("Gauss");
-    return 0;
-}
 
+    return 0;  // Sukces
+}
